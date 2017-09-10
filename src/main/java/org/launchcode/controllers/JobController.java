@@ -6,10 +6,9 @@ import org.launchcode.models.data.JobData;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+
 
 import javax.validation.Valid;
 
@@ -33,8 +32,8 @@ public class JobController {
         jobFromPassedInId = jobData.findById(id);
         if(jobFromPassedInId == null){
             return "redirect:";
-        }else{
-        model.addAttribute("job", jobFromPassedInId );
+        } else{
+        model.addAttribute("job", jobFromPassedInId);
         return "job-detail";
         }
     }
@@ -52,7 +51,18 @@ public class JobController {
         // new Job and add it to the jobData data store. Then
         // redirect to the job detail view for the new Job.
 
-        return "";
+        if(errors.hasErrors()){
+            model.addAttribute("name", errors);
+            model.addAttribute(jobForm.getName());
+            return "new-job";
+        }else {
+            Job newJob = new Job(jobForm.getName(), jobData.findById(jobForm.getEmployerId()).getEmployer(), jobData.findById(jobForm.getLocationId()).getLocation(), jobData.findById(jobForm.getPositionTypeId()).getPositionType(), jobData.findById(jobForm.getCoreCompetencyId()).getCoreCompetency());
+            jobData.add(newJob);
+
+            model.addAttribute("job",newJob);
+
+            return "redirect:/job?id=" + newJob.getId();
+        }
 
     }
 }

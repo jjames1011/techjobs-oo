@@ -1,6 +1,6 @@
 package org.launchcode.controllers;
 
-import org.launchcode.models.Job;
+import org.launchcode.models.*;
 import org.launchcode.models.forms.JobForm;
 import org.launchcode.models.data.JobData;
 import org.springframework.stereotype.Controller;
@@ -56,10 +56,10 @@ public class JobController {
             model.addAttribute(jobForm.getName());
             return "new-job";
         }else {
-            Job newJob = new Job(jobForm.getName(), jobData.findById(jobForm.getEmployerId()).getEmployer(), jobData.findById(jobForm.getLocationId()).getLocation(), jobData.findById(jobForm.getPositionTypeId()).getPositionType(), jobData.findById(jobForm.getCoreCompetencyId()).getCoreCompetency());
+            Job newJob = new Job(jobForm.getName(), jobData.getEmployers().findById(jobForm.getEmployerId()), jobData.getLocations().findById(jobForm.getLocationId()), jobData.getPositionTypes().findById(jobForm.getPositionTypeId()), jobData.getCoreCompetencies().findById(jobForm.getCoreCompetencyId()));
             jobData.add(newJob);
 
-            model.addAttribute("job",newJob);
+            model.addAttribute("job", newJob);
 
             return "redirect:/job?id=" + newJob.getId();
         }
